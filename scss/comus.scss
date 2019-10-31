@@ -1,0 +1,132 @@
+
+.comus-block {
+  li  {
+    //padding-top: 4em;   // take fixed navbar into account
+    //margin-top: -4em;
+  }
+  ol ol {
+    margin-left: 3em;
+  }
+  [type=submit] {
+    margin-left: 1em;
+  }
+}
+
+.comus-wrap {
+  border: 1px solid #ccc;
+  border-radius: .3em;
+  padding: .5em 1em;
+  margin-bottom: 1em;
+  .comus-buttons {
+    display: none;
+    margin-left: auto;
+    .field-comment-status {
+      height: 1.5rem;
+      border: 1px solid #ccc;
+      border-radius: .3em;
+      padding: 0 .3em;
+    }
+  }
+
+  &:hover .comus-buttons {
+    display: flex;
+  }
+}
+
+.comus-meta {
+  display: flex;
+}
+
+.comus-date {
+  margin-left: 1em;
+}
+
+.comus-status-item {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 1.5rem;
+  input {
+    position: absolute;
+    z-index: -1;
+    opacity: 0;
+    &:checked ~ label {
+      opacity: 1;
+    }
+  }
+  [value="1"] ~ label {
+    color: scale_color(#18bc9c, $lightness: -20%);
+  }
+  [value="2"] ~ label {
+    color: #e74c3c;
+  }
+  label {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 0;
+    cursor: pointer;
+    opacity: .3;
+    &:hover {
+      opacity: .7;
+    }
+  }
+}
+
+.comus-delete,
+.comus-edit,
+.comus-reply  {
+  margin-left: 1em;
+  color: #95a5a6;
+  &:hover {
+    color: #343a40;
+  }
+}
+
+.comus-group  {
+  width: 100%;
+}
+
+.comus-create,
+.comus-comment form {
+  display: flex;
+  align-items: flex-end;
+}
+
+.comus-editor,
+.comus-comment {
+  display: none;
+  .field-comment-body  {
+    flex: auto;
+  }
+}
+
+.comus-comment  {
+  margin-left: 3em;
+  margin-bottom: 1em;
+}
+
+.comus-editing {
+  .comus-body {
+    display: none;
+  }
+  .comus-editor {
+    display: flex;
+    align-items: flex-end;
+  }
+}
+
+.comus-replying {
+  .comus-comment  {
+    display: block;
+  }
+}
+
+.comus-pending .comus-body {
+  color: #95a5a6;
+}
+
+.comus-rejected .comus-body {
+  text-decoration: line-through;
+}

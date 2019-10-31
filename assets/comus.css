@@ -1,0 +1,125 @@
+.comus-block ol ol {
+  margin-left: 3em;
+}
+.comus-block [type=submit] {
+  margin-left: 1em;
+}
+
+.comus-wrap {
+  border: 1px solid #ccc;
+  border-radius: 0.3em;
+  padding: 0.5em 1em;
+  margin-bottom: 1em;
+}
+.comus-wrap .comus-buttons {
+  display: none;
+  margin-left: auto;
+}
+.comus-wrap .comus-buttons .field-comment-status {
+  height: 1.5rem;
+  border: 1px solid #ccc;
+  border-radius: 0.3em;
+  padding: 0 0.3em;
+}
+.comus-wrap:hover .comus-buttons {
+  display: flex;
+}
+
+.comus-meta {
+  display: flex;
+}
+
+.comus-date {
+  margin-left: 1em;
+}
+
+.comus-status-item {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 1.5rem;
+}
+.comus-status-item input {
+  position: absolute;
+  z-index: -1;
+  opacity: 0;
+}
+.comus-status-item input:checked ~ label {
+  opacity: 1;
+}
+.comus-status-item [value="1"] ~ label {
+  color: #13967d;
+}
+.comus-status-item [value="2"] ~ label {
+  color: #e74c3c;
+}
+.comus-status-item label {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0;
+  cursor: pointer;
+  opacity: 0.3;
+}
+.comus-status-item label:hover {
+  opacity: 0.7;
+}
+
+.comus-delete,
+.comus-edit,
+.comus-reply {
+  margin-left: 1em;
+  color: #95a5a6;
+}
+.comus-delete:hover,
+.comus-edit:hover,
+.comus-reply:hover {
+  color: #343a40;
+}
+
+.comus-group {
+  width: 100%;
+}
+
+.comus-create,
+.comus-comment form {
+  display: flex;
+  align-items: flex-end;
+}
+
+.comus-editor,
+.comus-comment {
+  display: none;
+}
+.comus-editor .field-comment-body,
+.comus-comment .field-comment-body {
+  flex: auto;
+}
+
+.comus-comment {
+  margin-left: 3em;
+  margin-bottom: 1em;
+}
+
+.comus-editing .comus-body {
+  display: none;
+}
+.comus-editing .comus-editor {
+  display: flex;
+  align-items: flex-end;
+}
+
+.comus-replying .comus-comment {
+  display: block;
+}
+
+.comus-pending .comus-body {
+  color: #95a5a6;
+}
+
+.comus-rejected .comus-body {
+  text-decoration: line-through;
+}
+
+/*# sourceMappingURL=comus.css.map */
