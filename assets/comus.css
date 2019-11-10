@@ -1,15 +1,79 @@
+@keyframes target-fade {
+  from {
+    background-color: lightgoldenrodyellow;
+  }
+  to {
+    background-color: #fff;
+  }
+}
+@keyframes target-fade-moderator {
+  from {
+    background-color: lightgoldenrodyellow;
+  }
+  to {
+    background-color: lightyellow;
+  }
+}
+@keyframes target-fade-own {
+  from {
+    background-color: lightgoldenrodyellow;
+  }
+  to {
+    background-color: lightcyan;
+  }
+}
+.comus-block li:target > .comus-wrap {
+  animation: target-fade 3s 1;
+}
+.comus-block li:target > .comus-moderator {
+  animation: target-fade-moderator 3s 1;
+}
+.comus-block li:target > .comus-own {
+  animation: target-fade-own 3s 1;
+}
 .comus-block ol ol {
-  margin-left: 3em;
+  border-left: 0.5em solid #e6e9ea;
+  padding-left: 3em;
 }
 .comus-block [type=submit] {
   margin-left: 1em;
 }
+.comus-block textarea {
+  border: 1px solid #95a5a6;
+  overflow: hidden;
+  resize: none;
+  min-height: 4em;
+}
+.comus-block .has-error .help-block {
+  color: #e74c3c;
+}
+
+.comus-create {
+  margin-bottom: 1em;
+}
+
+.comus-comment {
+  padding-top: 1em;
+  padding-left: 3em;
+  border-left: 0.5em solid #e6e9ea;
+}
+
+.comus-level {
+  display: flex;
+  flex-direction: column;
+}
+
+.comus-asc .comus-level {
+  flex-direction: column-reverse;
+}
+
+.comus-level-0 > .comus-list {
+  border-top: 1px solid #bfc9ca;
+}
 
 .comus-wrap {
-  border: 1px solid #ccc;
-  border-radius: 0.3em;
-  padding: 0.5em 1em;
-  margin-bottom: 1em;
+  border-bottom: 1px solid #bfc9ca;
+  padding: 0.5em 1rem;
 }
 .comus-wrap .comus-buttons {
   display: none;
@@ -25,12 +89,29 @@
   display: flex;
 }
 
-.comus-meta {
-  display: flex;
+.comus-author,
+.comus-date {
+  border-bottom: 1px solid #bfc9ca;
+}
+
+.comus-author {
+  font-weight: bold;
 }
 
 .comus-date {
-  margin-left: 1em;
+  padding-left: 1em;
+}
+
+.comus-moderator {
+  background-color: lightyellow;
+}
+
+.comus-own {
+  background-color: lightcyan;
+}
+
+.comus-meta {
+  display: flex;
 }
 
 .comus-status-item {
@@ -66,12 +147,14 @@
   opacity: 0.7;
 }
 
+.comus-next,
 .comus-delete,
 .comus-edit,
 .comus-reply {
   margin-left: 1em;
   color: #95a5a6;
 }
+.comus-next:hover,
 .comus-delete:hover,
 .comus-edit:hover,
 .comus-reply:hover {
@@ -97,20 +180,15 @@
   flex: auto;
 }
 
-.comus-comment {
-  margin-left: 3em;
-  margin-bottom: 1em;
-}
-
-.comus-editing .comus-body {
+.comus-editing > .comus-wrap .comus-body {
   display: none;
 }
-.comus-editing .comus-editor {
+.comus-editing > .comus-wrap .comus-editor {
   display: flex;
   align-items: flex-end;
 }
 
-.comus-replying .comus-comment {
+.comus-replying > .comus-level > .comus-comment {
   display: block;
 }
 
@@ -120,6 +198,19 @@
 
 .comus-rejected .comus-body {
   text-decoration: line-through;
+}
+
+.comus-message {
+  color: #6610f2;
+}
+
+.comus-user-comments th:first-child, .comus-user-comments td:first-child {
+  width: 12em;
+}
+
+.comus-user-summary {
+  font-size: 1.4rem;
+  font-weight: bold;
 }
 
 /*# sourceMappingURL=comus.css.map */

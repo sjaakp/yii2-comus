@@ -1,8 +1,9 @@
 <?php
 
 use yii\helpers\Html;
+use yii\helpers\Url;
 use yii\widgets\Pjax;
-use sjaakp\comus\CommentList;
+use sjaakp\comus\ComusList;
 
 /** @var $comment sjaakp\comus\models\Comment */
 /** @var $count int */
@@ -10,62 +11,68 @@ use sjaakp\comus\CommentList;
 /** @var $options array */
 /** @var $this yii\web\View */
 
-$baseId = str_replace('/', '-', $comment->subject);
-$user = Yii::$app->user;
-
-$statuses = [
-    $comment::PENDING => 'pending',
-    $comment::ACCEPTED => 'accepted',
-    $comment::REJECTED => 'rejected'
-];
-
 $this->registerJs('
-    $(".comus-block").change(function(e) {
-        $(e.target).parent().submit();
-    });
-    $(".comus-edit").click(function(e) {
+    function setLiClass(li, c) {
+        let b = li.hasClass(c);
+        $(".comus-block li").removeClass("comus-editing comus-replying");
+        if (!b) li.addClass(c);
+    }
+    $(".comus-block").on("change", ".comus-status", function(e) {
         e.preventDefault();
-        $(this).closest("li").toggleClass("comus-editing").removeClass("comus-replying");
-    });
-    $(".comus-reply").click(function(e) {
+        $(this).submit();
+    })
+    .on("click", ".comus-edit", function(e) {
         e.preventDefault();
-        $(this).closest("li").toggleClass("comus-replying");
-    });
-    $(".comus-editor").submit(function(e) {
+        setLiClass($(this).closest("li"), "comus-editing");
+    })
+    .on("click", ".comus-reply", function(e) {
+        e.preventDefault();
+        setLiClass($(this).closest("li"), "comus-replying");
+    })
+    .on("submit", ".comus-editor", function(e) {
         $(this).parent().removeClass("comus-editing");
-    });
-    $(".comus-comment form").submit(function(e) {
+    })
+    .on("submit", ".comus-comment form", function(e) {
         $(this).parent().removeClass("comus-replying");
     });
 ');
 
-Html::addCssClass($options, 'comus-block');
+$cls = 'comus-block comus-' . ($module->order == SORT_ASC ? 'asc' : 'desc');
+Html::addCssClass($options, $cls);
 
 Pjax::begin([
     'timeout' => 20000,
     'enablePushState' => false,
-    'options' => $options
+    'options' => $options,
+    'id' => 'cmts'
 ]);
 
 echo Html::tag('h3', Yii::t('comus', 'Comments ({n,number})', [
     'n' => $count
 ]), [ 'class' => 'comus-summary']);
 
-echo CommentList::widget([
-    'subject' => $comment->subject,
-    'module' => $module,
-]);
+if ($module->userCanView()) {
 
-if ($user->isGuest) {
-    echo Html::tag('p', $module->loginPrompt, [ 'class' => 'comus-prompt' ]);
-}
-else    {
-    echo $this->render('_editor', [
+    $lvl = $module->userCanComment() ? $this->render('_editor', [
         'module' => $module,
         'comment' => $comment,
         'action' => 'create',
         'class' => 'comus-create',
         'placeholder' => Yii::t('comus', 'My comment...')
+    ]) : Html::tag('p', Yii::t('comus', '<a href="{loginUrl}">Login</a> to comment', [
+        'loginUrl' => Url::to($module->loginUrl)
+    ]), [ 'class' => 'comus-prompt' ]);
+
+    $lvl .= ComusList::widget([
+        'subject' => $comment->subject,
+        'module' => $module,
     ]);
+
+    echo Html::tag('div', $lvl, [ 'class' => 'comus-level comus-level-0' ]);
+}
+else    {
+    echo Html::tag('p',  Yii::t('comus', '<a href="{loginUrl}">Login</a> to view comments', [
+        'loginUrl' => Url::to($module->loginUrl)
+    ]), [ 'class' => 'comus-prompt' ]);
 }
 Pjax::end();

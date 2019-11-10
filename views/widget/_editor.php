@@ -11,12 +11,26 @@ use sjaakp\comus\models\Comment;
 /** @var $class string */
 /** @var $label string */
 /** @var $placeholder false|string */
+/** @var $this yii\web\View */
+
+// @link https://stackoverflow.com/questions/4954252/css-textarea-that-expands-as-you-type-text
+$this->registerJs('
+$("textarea").on("paste input", function () {
+    if ($(this).outerHeight() > this.scrollHeight){
+        $(this).height(1)
+    }
+    while ($(this).outerHeight() < this.scrollHeight + parseFloat($(this).css("borderTopWidth")) + parseFloat($(this).css("borderBottomWidth"))){
+        $(this).height($(this).height() + 1)
+    }
+});
+');
+
+
+$url = ["/{$module->id}/default/$action"];
+if (! $comment->isNewRecord) $url['id'] = $comment->id;
 
 $form = ActiveForm::begin([
-    'action' => ["/{$module->id}/default/$action"],
-    //    'enableClientValidation' => false,
-    //    'validateOnChange' => false,
-    //    'validateOnBlur' => false,
+    'action' => $url,
     'options' => [
         'class' => $class,
         'data-pjax' => true,
@@ -27,14 +41,20 @@ echo $form->field($comment, 'body', [
     'options' => [
         'class' => 'comus-group'
     ]
-])->label(isset($label) ? $label : $module->getNickname() . ':')->textarea([
+])->label(isset($label) ? $label : $module->getNickname(null, false) . ':')->textarea([
     'class' => 'form-control',
+    'rows' => 1,
     'placeholder' => $placeholder
 ]);
 
 echo Html::activeHiddenInput($comment, 'subject');
 echo Html::activeHiddenInput($comment, 'parent');
 
-echo Html::submitButton(Yii::t('comus', 'Save'), ['class' => 'btn btn-outline-success']);
+echo Html::submitButton(Yii::t('comus', $module->icons['send']), [
+    'class' => 'btn btn-outline-success',
+    'title' => Yii::t('comus', 'Send')
+]);
 
 ActiveForm::end();
+?>
+

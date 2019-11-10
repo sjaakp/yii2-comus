@@ -1,8 +1,7 @@
 <?php
 
-use yii\widgets\ActiveForm;
 use yii\helpers\Html;
-use sjaakp\comus\CommentList;
+use sjaakp\comus\ComusList;
 use sjaakp\comus\models\Comment;
 
 /** @var $model Comment */
@@ -10,14 +9,10 @@ use sjaakp\comus\models\Comment;
 /** @var $level int */
 /** @var $this yii\web\View */
 
-$statuses = [
-    $model::ACCEPTED => '<i class="far fa-comment-check" title="Accept"></i>',
-    $model::REJECTED => '<i class="far fa-hand-paper" title="Reject"></i>',
-];
-
 $delLabel = Yii::t('comus', 'Delete');
 $editLabel = Yii::t('comus', 'Edit');
 $replyLabel = Yii::t('comus', 'Reply');
+$nextLabel = Yii::t('comus', 'Next');
 
 $reply = new Comment([
     'subject' => $model->subject,
@@ -28,31 +23,47 @@ $identity = $model->createdBy;
 $moduleId = $module->id;
 $user = Yii::$app->user;
 
-$meta = Html::tag('div', Html::a($module->getNickname($identity), ['/profile/view', 'id' => $identity->id ]), [ 'class' => 'comus-author' ])
-    . Html::tag('div', Yii::$app->formatter->asRelativeTime($model->created_at), [ 'class' => 'comus-date' ]);
+$meta = Html::tag('div', $module->getNickname($identity), [ 'class' => 'comus-author' ])
+    . Html::tag('div', $model->getFormattedTime($module->datetimeFormat), [ 'class' => 'comus-date' ]);
 
 if ($module->userCanComment())   {
     $buttons = '';
-    if ($user->can('acceptComment'))    {
+    if ($user->can('manageComments'))    {
         $buttons = Html::beginForm(["/$moduleId/default/update", 'id' => $model->id], 'post', [
-            'class' => 'form-inline',
-            'data-pjax' => true,
+            'class' => 'comus-status form-inline',
+            'data-pjax' => true
         ]);
-        $statusButtons = '';
-        foreach ($statuses as $val => $lbl)  {
-            $id = "i{$model->id}-$val";
-            $statButton = Html::radio('Comment[status]', $val == $model->status, [
-                'id' => $id,
-                'value' => $val
+
+        $valAcc = Comment::ACCEPTED;
+        $valRej = Comment::REJECTED;
+        $idAcc = "i{$model->id}-$valAcc";
+        $idRej = "i{$model->id}-$valRej";
+        $statusButtons = Html::tag('div', Html::radio('Comment[status]', $model->status == $valAcc, [
+                'id' => $idAcc,
+                'value' => $valAcc
+            ]) . Html::label($module->icons['accept'], $idAcc), [
+                'class' => 'comus-status-item',
+                'title' => Yii::t('comus', 'Accept')
             ])
-                . Html::label($lbl, $id);
-            $statusButtons .= Html::tag('div', $statButton, [ 'class' => 'comus-status-item']);
-        }
+            . Html::tag('div', Html::radio('Comment[status]', $model->status == $valRej, [
+                'id' => $idRej,
+                'value' => $valRej
+            ]) . Html::label($module->icons['reject'], $idRej), [
+                'class' => 'comus-status-item',
+                'title' => Yii::t('comus', 'Reject')
+            ]);
+
         $buttons .= Html::tag('div', $statusButtons, [ 'class' => 'form_group field-comment-status' ]);
         $buttons .= Html::endForm();
+        $buttons .= Html::a($module->icons['next'], ["/$moduleId/default/pending"], [
+            'class' => 'comus-next',
+            'title' => $nextLabel,
+            'aria-label' => $nextLabel,
+            'data-pjax' => 0,
+       ]);
     }
     if ($user->can('updateComment', $model))    {
-        $buttons .= Html::a('<i class="far fa-comment-alt-edit"></i>', '#', [
+        $buttons .= Html::a($module->icons['edit'], '#', [
             'class' => 'comus-edit',
             'title' => $editLabel,
             'aria-label' => $editLabel,
@@ -60,7 +71,7 @@ if ($module->userCanComment())   {
         ]);
     }
     if ($user->can('deleteComment', $model))    {
-        $buttons .= Html::a('<i class="far fa-trash-alt"></i>', ["/$moduleId/default/delete", 'id' => $model->id], [
+        $buttons .= Html::a($module->icons['delete'], ["/$moduleId/default/delete", 'id' => $model->id], [
             'class' => 'comus-delete',
             'title' => $delLabel,
             'aria-label' => $delLabel,
@@ -71,17 +82,19 @@ if ($module->userCanComment())   {
             ]
         ]);
     }
-    $buttons .= Html::a('<i class="far fa-reply"></i>', '#', [
-        'class' => 'comus-reply',
-        'title' => $replyLabel,
-        'aria-label' => $replyLabel,
-        'data-pjax' => 0,
-    ]);
+    if ($level < $module->maxLevel)    {
+        $buttons .= Html::a($module->icons['reply'], '#', [
+            'class' => 'comus-reply',
+            'title' => $replyLabel,
+            'aria-label' => $replyLabel,
+            'data-pjax' => 0,
+        ]);
+    }
     $meta .= Html::tag('div', $buttons, [ 'class' => 'comus-buttons' ]);
 }
 
 $wrap = Html::tag('div', $meta, [ 'class' => 'comus-meta' ])
-    . Html::tag('div', $model->body, [ 'class' => 'comus-body' ]);
+    . $model->getSanitizedBody();
 
 if ($user->can('updateComment')) {
     $wrap .= $this->render('_editor', [
@@ -94,25 +107,26 @@ if ($user->can('updateComment')) {
     ]);
 }
 
-echo Html::tag('div', $wrap, [ 'class' => 'comus-wrap' ]);
+echo Html::tag('div', $wrap, [ 'class' => 'comus-wrap ' . $model->classes ]);
 
-if ($level <= $module->maxLevel)    {
-    echo CommentList::widget([
+if ($level < $module->maxLevel)    {
+    $level1 = $level + 1;
+    $lvl = $module->userCanComment() ? Html::tag('div',
+        $this->render('_editor', [
+            'module' => $module,
+            'comment' => $reply,
+            'action' => 'create',
+            'class' => false,
+            'placeholder' => Yii::t('comus', 'My reply...')
+        ]),  [ 'class' => 'comus-comment' ]) : '';
+
+    $lvl .= ComusList::widget([
         'subject' => $model->subject,
         'module' => $module,
         'parent' => $model->id,
-        'level' => $level + 1
+        'level' => $level1
     ]);
 
-    if ($module->userCanComment())   {
-        echo Html::tag('div',
-            $this->render('_editor', [
-                'module' => $module,
-                'comment' => $reply,
-                'action' => 'create',
-                'class' => false,
-                'placeholder' => Yii::t('comus', 'My reply...')
-            ]),  [ 'class' => 'comus-comment' ]);
-    }
+    echo Html::tag('div', $lvl, [ 'class' => "comus-level comus-level-$level1" ]);
 }
 ?>

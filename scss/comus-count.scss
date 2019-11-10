@@ -1,0 +1,24 @@
+
+$bcol: #343a40;
+
+.comus-count  {
+  display: inline-block;
+  padding: .25em .4em;
+  border-radius: .25rem;
+  font-size: 80%;
+  font-weight: bold;
+  line-height: 1;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: baseline;
+  color: #ddd;
+  background-color: $bcol;
+}
+
+a.comus-count {
+  text-decoration: none;
+  &:hover {
+    color: #fff;
+    background-color: scale_color($bcol, $lightness: -20%);
+  }
+}

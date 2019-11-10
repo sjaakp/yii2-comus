@@ -1,0 +1,23 @@
+.comus-count {
+  display: inline-block;
+  padding: 0.25em 0.4em;
+  border-radius: 0.25rem;
+  font-size: 80%;
+  font-weight: bold;
+  line-height: 1;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: baseline;
+  color: #ddd;
+  background-color: #343a40;
+}
+
+a.comus-count {
+  text-decoration: none;
+}
+a.comus-count:hover {
+  color: #fff;
+  background-color: #2a2e33;
+}
+
+/*# sourceMappingURL=comus-count.css.map */

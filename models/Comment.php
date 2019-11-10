@@ -5,6 +5,7 @@ namespace sjaakp\comus\models;
 use Yii;
 use yii\db\ActiveRecord;
 use yii\behaviors\BlameableBehavior;
+use yii\helpers\Html;
 use sjaakp\novelty\NoveltyBehavior;
 use yii\db\Expression;
 
@@ -27,6 +28,12 @@ class Comment extends ActiveRecord
     const ACCEPTED = 1;
     const REJECTED = 2;
 
+    const STATUSES = [
+        self::PENDING => 'pending',
+        self::ACCEPTED => 'accepted',
+        self::REJECTED => 'rejected'
+    ];
+
     /**
      * {@inheritdoc}
      */
@@ -47,6 +54,52 @@ class Comment extends ActiveRecord
             ],
             BlameableBehavior::class,
         ];
+    }
+
+    /**
+     * @return string
+     */
+    public function getClasses()
+    {
+        $r = [ 'comus-' . self::STATUSES[$this->status] ];
+        $novelty = $this->novelty;     // null|'new'|'updated'
+        if (! empty($novelty)) $r[] = 'comus-' . $novelty;
+        if (Yii::$app->user->id == $this->created_by) $r[] = 'comus-own';
+        if (Yii::$app->authManager->checkAccess($this->created_by, 'manageComments')) $r[] = 'comus-moderator';
+        return implode(' ', $r);
+    }
+
+    /**
+     * @return string
+     */
+    public function getSanitizedBody()
+    {
+        $body = Html::tag('div', $this->body, [ 'class' => 'comus-body' ]);
+        if ($this->status == self::REJECTED)    {
+            $r = Html::tag('div', Yii::t('comus', 'This comment has been rejected.'), [ 'class' => 'comus-message' ]);
+            if (Yii::$app->user->can('manageComments')) $r .= $body;
+            return $r;
+        }
+        return $body;
+    }
+
+    /**
+     * @param $format
+     * @return string  Any value yii\i18n\formatter::datetimeFormat can take, or 'relative'
+     * @throws \yii\base\InvalidConfigException
+     */
+    public function getFormattedTime($format)
+    {
+        $formatter = Yii::$app->formatter;
+        return $format == 'relative' ? $formatter->asRelativeTime($this->created_at) : $formatter->asDatetime($this->created_at, $format);
+    }
+
+    /**
+     * @return array
+     */
+    public function getHref()
+    {
+        return [ "/{$this->subject}", '#' => "cmt-{$this->id}" ];
     }
 
     /**

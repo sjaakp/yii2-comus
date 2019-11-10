@@ -4,14 +4,15 @@ namespace sjaakp\comus\controllers;
 
 use Yii;
 use yii\data\ActiveDataProvider;
-use yii\filters\VerbFilter;
 use yii\web\Controller;
+use yii\filters\AccessControl;
+use yii\filters\VerbFilter;
 use yii\web\NotFoundHttpException;
-use yii\web\ForbiddenHttpException;
+use sjaakp\comus\Module;
 use sjaakp\comus\models\Comment;
 
 /**
- * Default controller for the `comment` module
+ * Default controller for the Comus module
  */
 class DefaultController extends Controller
 {
@@ -21,31 +22,22 @@ class DefaultController extends Controller
     public function behaviors()
     {
         return [
-/*            'access' => [
+            'access' => [
                 'class' => AccessControl::class,
-                'only' => ['view', 'create', 'delete'],
+                'only' => ['index', 'pending'],
                 'rules' => [
                     [
-                        'actions' => ['view'],
                         'allow' => true,
-                        'roles' => ['@']       // allow all authenticated users
-                    ],
-                    [
-                        'actions' => ['create'],
-                        'allow' => true,
-                        'permissions' => ['createItem']
-                    ],
-                    [
-                        'actions' => ['delete'],
-                        'allow' => true,
-                        'permissions' => ['deleteItem']
+                        'permissions' => ['manageComments']
                     ],
                 ]
-            ],*/
+            ],
             'verbs' => [
                 'class' => VerbFilter::class,
                 'actions' => [
-                    'delete' => ['POST'],
+                    'index' => [ 'GET', 'POST' ],
+                    'pending' => [ 'GET', 'POST' ],
+                    '*' => [ 'POST' ],
                 ],
             ],
         ];
@@ -60,7 +52,7 @@ class DefaultController extends Controller
         $dataProvider = new ActiveDataProvider([
             'query' => Comment::find()
                 ->where([ 'status' => $s ])
-                ->orderBy([ 'created_at' => SORT_DESC ]),
+                ->orderBy([ 'created_at' => $this->module->order ]),
         ]);
 
         return $this->render('index', [
@@ -71,31 +63,17 @@ class DefaultController extends Controller
     }
 
     /**
-     * Displays a single Comment model.
-     * @param integer $id
-     * @return mixed
-     * @throws NotFoundHttpException if the model cannot be found
+     * @return \yii\web\Response
+     * Redirect to first pending comment if available, to index otherwise
      */
-/*    public function actionView($id)
+    public function actionPending()
     {
-        return $this->render('view', [
-            'model' => $this->findModel($id),
-        ]);
-    }*/
+        $comment = Comment::find()
+            ->where([ 'status' => Comment::PENDING ])
+            ->orderBy([ 'created_at' => $this->module->order ])
+            ->one();
 
-    /**
-     * @param $model Comment
-     * @return string
-     */
-    protected function cuHelper($model)
-    {
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->renderAjax('cu', [
-                'subject' => $model->subject,
-                'moduleId' => $this->module->id
-            ]);
-        }
-        return '';
+        return $this->redirect($comment ? $comment->url : [ 'index' ]);
     }
 
     /**
@@ -103,15 +81,20 @@ class DefaultController extends Controller
      */
     public function actionCreate()
     {
-        return $this->cuHelper(new Comment());
-/*
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->renderAjax('create', [
-                'subject' => $model->subject,
-                'moduleId' => $this->module->id
-            ]);
-        }
-        return '';*/
+        /* @var $module Module */
+        $module = $this->module;
+        return $module->userCanComment() ? $this->refreshWidget(new Comment()) : '';
+    }
+
+    /**
+     * @param $id
+     * @return string
+     * @throws NotFoundHttpException
+     */
+    public function actionStatus($id)
+    {
+        $model = $this->findModel($id);
+        return Yii::$app->user->can('manageComments', $model) ? $this->refreshWidget($model) : '';
     }
 
     /**
@@ -121,46 +104,12 @@ class DefaultController extends Controller
      */
     public function actionUpdate($id)
     {
-        return $this->cuHelper($this->findModel($id));
-/*        $model = $this->findModel($id);
-
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->renderAjax('create', [
-                'subject' => $model->subject,
-                'moduleId' => $this->module->id
-            ]);
-        }
-        return '';*/
+        $model = $this->findModel($id);
+        return Yii::$app->user->can('updateComment', $model) ? $this->refreshWidget($model) : '';
     }
 
     /**
-     * Updates an existing LuckyNumber model.
-     * If update is successful, the browser will be redirected to the 'view' page.
-     * @param integer $id
-     * @return mixed
-     * @throws ForbiddenHttpException
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-/*    public function actionUpdate($id)
-    {
-        $model = $this->findModel($id);
-
-        if (! Yii::$app->user->can('updateItem', $model))   {
-            throw new ForbiddenHttpException(Yii::t('comus', 'Sorry, you\'re not allowed to update this Comment'));
-        }
-
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
-        }
-
-        return $this->render('update', [
-            'model' => $model,
-        ]);
-    }*/
-
-    /**
-     * Deletes an existing LuckyNumber model.
-     * If deletion is successful, the browser will be redirected to the 'index' page.
+     * Deletes an existing Comment model.
      * @param integer $id
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
@@ -170,14 +119,31 @@ class DefaultController extends Controller
     public function actionDelete($id)
     {
         $model = $this->findModel($id);
+
+        if (! Yii::$app->user->can('deleteComment', $model)) return '';
+
         $subject = $model->subject;
         $model->delete();
 
-        return $this->renderAjax('cu', [
+        return $this->renderAjax('refresh', [
             'subject' => $subject,
             'moduleId' => $this->module->id
         ]);
-//        return $this->redirect(['/' . $subject]);
+    }
+
+    /**
+     * @param $model Comment
+     * @return string
+     */
+    protected function refreshWidget($model)
+    {
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            return $this->renderAjax('refresh', [
+                'subject' => $model->subject,
+                'moduleId' => $this->module->id
+            ]);
+        }
+        return '';
     }
 
     /**

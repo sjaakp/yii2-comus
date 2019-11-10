@@ -1,5 +1,6 @@
 <?php
 
+use yii\helpers\StringHelper;
 use yii\widgets\Pjax;
 use yii\grid\GridView;
 use yii\helpers\Html;
@@ -41,7 +42,7 @@ $this->params['breadcrumbs'][] = $this->title;
         ],
     ],
     'options' => [
-        'class' => 'mb-3 nav-justified'
+        'class' => 'mb-3 nav-justified font-weight-bold'
     ]
 ]) ?>
 
@@ -51,8 +52,8 @@ $this->params['breadcrumbs'][] = $this->title;
         ['class' => 'yii\grid\SerialColumn'],
         [
             'attribute' => 'body',
-            'content' => function($model, $key, $index, $column)    {
-                return Html::a($model->body, [ '/' . $model->subject, '#' => 'cmt-' . $model->id ], [ 'data-pjax' => 0 ]);
+            'content' => function($model, $key, $index, $column) use ($module)    {
+                return Html::a(StringHelper::truncate($model->body, $module->truncLength), $model->href, [ 'data-pjax' => 0 ]);
             }
         ],
         [
@@ -66,28 +67,32 @@ $this->params['breadcrumbs'][] = $this->title;
         [
             'attribute' => 'created_by',
             'content' => function($model, $key, $index, $column) use ($module)   {
-                return Html::a($module->getNickname($model->createdBy), '#', [ 'data-pjax' => 0 ]);
+//                $url = $module->profileUrl;
+//                $url['id'] = $model->created_by;
+                return $module->getNickname($model->createdBy, [ 'data-pjax' => 0 ]);
             }
         ],
 //        'updated_by',
 //        'status',
 
-        [
+/*        [
             'class' => 'yii\grid\ActionColumn',
-/*            'visibleButtons' => [
+            'visibleButtons' => [
                 'view' => ! Yii::$app->user->isGuest,
                 'update' => function ($model, $key, $index) {
                     return Yii::$app->user->can('updateItem', $model);
                 },
                 'delete' => Yii::$app->user->can('deleteItem')
-            ]*/
-        ],
+            ]
+        ],*/
     ],
     'tableOptions' => ['class' => 'table table-sm table-bordered'],
     'formatter' => [
         'class' => Formatter::class,
         'datetimeFormat' => 'short'
-    ]
+    ],
+    'summary' => Yii::t('comus', '{begin}-{end}/{totalCount}'),
+    'emptyText' => Yii::t('comus', 'Empty')
 ]); ?>
 
 <?php Pjax::end() ?>

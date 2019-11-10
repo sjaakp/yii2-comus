@@ -1,26 +1,14 @@
 <?php
 
-
 namespace sjaakp\comus;
 
 use Yii;
 use yii\base\InvalidConfigException;
 use yii\base\Widget;
 use sjaakp\comus\models\Comment as CommentModel;
-use yii\helpers\Inflector;
 
-class Comment extends Widget
+class Comment extends ComusBase
 {
-    /**
-     * @var yii\db\BaseActiveRecord | null
-     */
-    public $model;
-
-    /**
-     * @var string
-     */
-    public $subject;
-
     /**
      * @var string
      */
@@ -51,18 +39,6 @@ class Comment extends Widget
         $this->oldWidgetCounter = Widget::$counter;
         Widget::$counter = $this->widgetCounter;
 
-        if (! empty($this->model))  {
-            $controllerId = Inflector::camel2id($this->model->formName());
-            $id = $this->model->primaryKey;
-            if (is_array($id))  {
-                throw new InvalidConfigException(Yii::t('comus', 'Model has composite primary key; this is not allowed.'));
-            }
-            $this->subject = "$controllerId/$id";
-        }
-
-        if (empty($this->subject)) {
-            throw new InvalidConfigException(Yii::t('comus', 'Either "model" or "subject" property must be set.'));
-        }
         $asset = new ComusAsset();
         $asset->register($this->view);
     }
@@ -89,5 +65,4 @@ class Comment extends Widget
         Widget::$counter = $this->oldWidgetCounter;
         return $r;
     }
-
 }
