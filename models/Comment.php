@@ -1,5 +1,17 @@
 <?php
 
+/**
+ * sjaakp/yii2-comus
+ * ----------
+ * Comment module for Yii2 framework
+ * Version 1.0.0
+ * Copyright (c) 2019
+ * Sjaak Priester, Amsterdam
+ * MIT License
+ * https://github.com/sjaakp/yii2-comus
+ * https://sjaakpriester.nl
+ */
+
 namespace sjaakp\comus\models;
 
 use Yii;
@@ -85,12 +97,15 @@ class Comment extends ActiveRecord
 
     /**
      * @param $format
-     * @return string  Any value yii\i18n\formatter::datetimeFormat can take, or 'relative'
+     * @return string  'standard' | 'relative' | any value yii\i18n\formatter::datetimeFormat can take
      * @throws \yii\base\InvalidConfigException
      */
     public function getFormattedTime($format)
     {
         $formatter = Yii::$app->formatter;
+        if ($format == 'standard')  {
+            return $formatter->asRelativeTime($this->created_at) . Html::tag('span', $formatter->asDatetime($this->created_at, 'short'), [ 'class' => 'comus-short' ]);
+        }
         return $format == 'relative' ? $formatter->asRelativeTime($this->created_at) : $formatter->asDatetime($this->created_at, $format);
     }
 

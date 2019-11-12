@@ -1,5 +1,17 @@
 <?php
 
+/**
+ * sjaakp/yii2-comus
+ * ----------
+ * Comment module for Yii2 framework
+ * Version 1.0.0
+ * Copyright (c) 2019
+ * Sjaak Priester, Amsterdam
+ * MIT License
+ * https://github.com/sjaakp/yii2-comus
+ * https://sjaakpriester.nl
+ */
+
 namespace sjaakp\comus\controllers;
 
 use Yii;
@@ -11,9 +23,6 @@ use yii\web\NotFoundHttpException;
 use sjaakp\comus\Module;
 use sjaakp\comus\models\Comment;
 
-/**
- * Default controller for the Comus module
- */
 class DefaultController extends Controller
 {
     /**
@@ -35,8 +44,9 @@ class DefaultController extends Controller
             'verbs' => [
                 'class' => VerbFilter::class,
                 'actions' => [
-                    'index' => [ 'GET', 'POST' ],
-                    'pending' => [ 'GET', 'POST' ],
+                    'index' => [ 'GET' ],
+                    'pending' => [ 'GET' ],
+                    'user' => [ 'GET' ],
                     '*' => [ 'POST' ],
                 ],
             ],
@@ -52,13 +62,29 @@ class DefaultController extends Controller
         $dataProvider = new ActiveDataProvider([
             'query' => Comment::find()
                 ->where([ 'status' => $s ])
-                ->orderBy([ 'created_at' => $this->module->order ]),
+                ->orderBy([ 'created_at' => $this->module->orderDescending ? SORT_DESC : SORT_ASC ]),
         ]);
 
         return $this->render('index', [
             'dataProvider' => $dataProvider,
             'category' => $s,
             'module' => $this->module
+        ]);
+    }
+
+    /**
+     * @param $id
+     * @return string
+     */
+    public function actionUser($id)
+    {
+        /* @var $iClass yii\db\ActiveRecord */
+        $iClass = Yii::$app->user->identityClass;
+        $identity = $iClass::findOne($id);
+
+        return $this->render('user', [
+            'module' => $this->module,
+            'identity' => $identity,
         ]);
     }
 
@@ -70,7 +96,7 @@ class DefaultController extends Controller
     {
         $comment = Comment::find()
             ->where([ 'status' => Comment::PENDING ])
-            ->orderBy([ 'created_at' => $this->module->order ])
+            ->orderBy([ 'created_at' => $this->module->orderDescending ? SORT_DESC : SORT_ASC ])
             ->one();
 
         return $this->redirect($comment ? $comment->url : [ 'index' ]);
@@ -83,6 +109,7 @@ class DefaultController extends Controller
     {
         /* @var $module Module */
         $module = $this->module;
+//        return '';
         return $module->userCanComment() ? $this->refreshWidget(new Comment()) : '';
     }
 

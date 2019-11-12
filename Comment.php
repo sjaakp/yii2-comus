@@ -1,19 +1,25 @@
 <?php
 
+/**
+ * sjaakp/yii2-comus
+ * ----------
+ * Comment module for Yii2 framework
+ * Version 1.0.0
+ * Copyright (c) 2019
+ * Sjaak Priester, Amsterdam
+ * MIT License
+ * https://github.com/sjaakp/yii2-comus
+ * https://sjaakpriester.nl
+ */
+
 namespace sjaakp\comus;
 
-use Yii;
 use yii\base\InvalidConfigException;
 use yii\base\Widget;
 use sjaakp\comus\models\Comment as CommentModel;
 
 class Comment extends ComusBase
 {
-    /**
-     * @var string
-     */
-    public $moduleId = 'comment';
-
     /**
      * @var array HTML options for the surrounding div
      */
@@ -52,13 +58,10 @@ class Comment extends ComusBase
         $comment = new CommentModel([
             'subject' => $this->subject
         ]);
-        $module = Yii::$app->getModule($this->moduleId);
-        $count = CommentModel::find()->where([ 'subject' => $this->subject ])->count();
-
         $r = $this->render('widget/comment', [
             'comment' => $comment,
-            'count' => $count,
-            'module' => $module,
+            'count' => $this->module->getQuery([ 'subject' => $this->subject ])->count(),
+            'module' => $this->module,
             'options' => $this->options
         ]);
 

@@ -1,5 +1,16 @@
 <?php
 
+/**
+ * sjaakp/yii2-comus
+ * ----------
+ * Comment module for Yii2 framework
+ * Version 1.0.0
+ * Copyright (c) 2019
+ * Sjaak Priester, Amsterdam
+ * MIT License
+ * https://github.com/sjaakp/yii2-comus
+ * https://sjaakpriester.nl
+ */
 
 namespace sjaakp\comus;
 
@@ -21,6 +32,16 @@ class ComusBase extends Widget
     public $subject;
 
     /**
+     * @var string
+     */
+    public $moduleId = 'comment';
+
+    /**
+     * @var \sjaakp\comus\Module
+     */
+    protected $module;
+
+    /**
      * {@inheritdoc}
      * @throws InvalidConfigException
      */
@@ -40,5 +61,7 @@ class ComusBase extends Widget
         if (empty($this->subject)) {
             throw new InvalidConfigException('Either "model" or "subject" property must be set.');
         }
+
+        $this->module = Yii::$app->getModule($this->moduleId);
     }
 }

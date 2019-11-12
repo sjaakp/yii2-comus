@@ -1,5 +1,17 @@
 <?php
 
+/**
+ * sjaakp/yii2-comus
+ * ----------
+ * Comment module for Yii2 framework
+ * Version 1.0.0
+ * Copyright (c) 2019
+ * Sjaak Priester, Amsterdam
+ * MIT License
+ * https://github.com/sjaakp/yii2-comus
+ * https://sjaakpriester.nl
+ */
+
 use yii\helpers\Html;
 use sjaakp\comus\ComusList;
 use sjaakp\comus\models\Comment;
@@ -25,6 +37,8 @@ $user = Yii::$app->user;
 
 $meta = Html::tag('div', $module->getNickname($identity), [ 'class' => 'comus-author' ])
     . Html::tag('div', $model->getFormattedTime($module->datetimeFormat), [ 'class' => 'comus-date' ]);
+
+$ribbon = Html::tag('div', $meta, [ 'class' => 'comus-meta' ]);
 
 if ($module->userCanComment())   {
     $buttons = '';
@@ -90,10 +104,10 @@ if ($module->userCanComment())   {
             'data-pjax' => 0,
         ]);
     }
-    $meta .= Html::tag('div', $buttons, [ 'class' => 'comus-buttons' ]);
+    $ribbon .= Html::tag('div', $buttons, [ 'class' => 'comus-buttons' ]);
 }
 
-$wrap = Html::tag('div', $meta, [ 'class' => 'comus-meta' ])
+$wrap = Html::tag('div', $ribbon, [ 'class' => 'comus-ribbon' ])
     . $model->getSanitizedBody();
 
 if ($user->can('updateComment')) {

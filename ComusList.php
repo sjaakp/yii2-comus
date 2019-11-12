@@ -1,10 +1,21 @@
 <?php
 
+/**
+ * sjaakp/yii2-comus
+ * ----------
+ * Comment module for Yii2 framework
+ * Version 1.0.0
+ * Copyright (c) 2019
+ * Sjaak Priester, Amsterdam
+ * MIT License
+ * https://github.com/sjaakp/yii2-comus
+ * https://sjaakpriester.nl
+ */
+
 namespace sjaakp\comus;
 
 use yii\data\ActiveDataProvider;
 use yii\widgets\ListView;
-use sjaakp\comus\models\Comment;
 
 class ComusList extends ListView
 {
@@ -42,10 +53,10 @@ class ComusList extends ListView
     public function init()
     {
         $this->dataProvider = new ActiveDataProvider([
-            'query' => Comment::find()->where([
+            'query' => $this->module->getQuery([
                 'subject' => $this->subject,
                 'parent' => $this->parent
-            ])->orderBy(['created_at' => $this->module->order]),
+            ]),
             'pagination' => false,
             'sort' => false
         ]);

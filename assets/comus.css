@@ -1,35 +1,16 @@
 @keyframes target-fade {
   from {
-    background-color: lightgoldenrodyellow;
+    background-color: #fd9843;
   }
   to {
-    background-color: #fff;
+    background-color: var(--comus-bg);
   }
 }
-@keyframes target-fade-moderator {
-  from {
-    background-color: lightgoldenrodyellow;
-  }
-  to {
-    background-color: lightyellow;
-  }
-}
-@keyframes target-fade-own {
-  from {
-    background-color: lightgoldenrodyellow;
-  }
-  to {
-    background-color: lightcyan;
-  }
+.comus-block {
+  --comus-bg: #fff;
 }
 .comus-block li:target > .comus-wrap {
   animation: target-fade 3s 1;
-}
-.comus-block li:target > .comus-moderator {
-  animation: target-fade-moderator 3s 1;
-}
-.comus-block li:target > .comus-own {
-  animation: target-fade-own 3s 1;
 }
 .comus-block ol ol {
   border-left: 0.5em solid #e6e9ea;
@@ -72,6 +53,7 @@
 }
 
 .comus-wrap {
+  background-color: var(--comus-bg);
   border-bottom: 1px solid #bfc9ca;
   padding: 0.5em 1rem;
 }
@@ -89,9 +71,9 @@
   display: flex;
 }
 
-.comus-author,
-.comus-date {
-  border-bottom: 1px solid #bfc9ca;
+.comus-meta {
+  display: flex;
+  border-bottom: 1px dotted #95a5a6;
 }
 
 .comus-author {
@@ -102,15 +84,21 @@
   padding-left: 1em;
 }
 
+.comus-short {
+  padding-left: 1em;
+  font-size: 75%;
+  color: #95a5a6;
+}
+
 .comus-moderator {
-  background-color: lightyellow;
+  --comus-bg: lightyellow;
 }
 
 .comus-own {
-  background-color: lightcyan;
+  --comus-bg: lightcyan;
 }
 
-.comus-meta {
+.comus-ribbon {
   display: flex;
 }
 

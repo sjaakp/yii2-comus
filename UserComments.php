@@ -1,5 +1,17 @@
 <?php
 
+/**
+ * sjaakp/yii2-comus
+ * ----------
+ * Comment module for Yii2 framework
+ * Version 1.0.0
+ * Copyright (c) 2019
+ * Sjaak Priester, Amsterdam
+ * MIT License
+ * https://github.com/sjaakp/yii2-comus
+ * https://sjaakpriester.nl
+ */
+
 namespace sjaakp\comus;
 
 use Yii;
@@ -17,14 +29,17 @@ class UserComments extends GridView
     public $userId;
 
     /**
-     * @var string   Any value yii\i18n\formatter::datetimeFormat can take, or 'relative'
+     * @var string
+     * 'standard' | 'relative' | any value yii\i18n\formatter::datetimeFormat can take
+     * 'standard' yields a combination of 'relative' and 'short'.
      */
     public $datetimeFormat = 'short';
 
     /**
      * @var int
+     * @var int maximum length of comment contents presented
      */
-    public $truncLength = 60;
+    public $truncLength = 80;
 
     public $options = [ 'class' => 'comus-user-comments' ];
     public $tableOptions = ['class' => 'table table-sm table-bordered'];
@@ -32,19 +47,29 @@ class UserComments extends GridView
     public $showOnEmpty = false;
 
     /**
+     * @var string
+     */
+    public $moduleId = 'comment';
+
+    /**
      * {@inheritdoc}
      * @throws \yii\base\InvalidConfigException
      */
     public function init()
     {
+        /** @var $module \sjaakp\comus\Module */
+        $module = Yii::$app->getModule($this->moduleId);
+        $query = $module->getQuery([ 'created_by' => $this->userId ]);
+
         $this->dataProvider = new ActiveDataProvider([
-            'query' => Comment::find()->where([ 'created_by' => $this->userId ]),
+            'query' => $query,
             'sort' => false
         ]);
         $this->columns = [
             [
                 'attribute' => 'created_at',
                 'value' => function ($model, $key, $index, $widget)  {
+                    /* @var $model Comment */
                     return $model->getFormattedTime($this->datetimeFormat);
                 },
             ],

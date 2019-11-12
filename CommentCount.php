@@ -1,11 +1,21 @@
 <?php
 
+/**
+ * sjaakp/yii2-comus
+ * ----------
+ * Comment module for Yii2 framework
+ * Version 1.0.0
+ * Copyright (c) 2019
+ * Sjaak Priester, Amsterdam
+ * MIT License
+ * https://github.com/sjaakp/yii2-comus
+ * https://sjaakpriester.nl
+ */
+
 
 namespace sjaakp\comus;
 
 use yii\base\InvalidConfigException;
-use sjaakp\comus\models\Comment;
-use yii\base\Widget;
 
 class CommentCount extends ComusBase
 {
@@ -19,7 +29,7 @@ class CommentCount extends ComusBase
     public $template = '<a class="comus-count" href="{href}">{count}</a>';
 
     /**
-     * @var bool
+     * @var bool  whether to show the counter if there are no comments
      */
     public $showZero = false;
 
@@ -41,7 +51,8 @@ class CommentCount extends ComusBase
      */
     public function run()
     {
-        $count = Comment::find()->where([ 'subject' => $this->subject ])->count();
+        $count = $this->module->getQuery([ 'subject' => $this->subject ])->count();
+
         if ($count > 0 || $this->showZero)  {
             return $this->template ? str_replace([ '{href}', '{count}' ], [ $this->subject . '#cmts', $count ], $this->template) : $count;
         }

@@ -5,55 +5,33 @@ $mvert: 1em;
 
 $gray: #95a5a6;
 $gray-dark: #343a40;
+$col-bg: #fff;
 $col-border: scale_color($gray, $lightness: 40%);
 $col-message: #6610f2;
-$col-signal:  lightgoldenrodyellow;
+$col-signal:  scale-color(#fd7e14, $lightness: 20%);
 $col-moderator: lightyellow;
 $col-own: lightcyan;
 $signal-time: 3s;
 
-//$hor-border: scale_color($bcol, $lightness: 60%);
 $left-border: .5em solid scale_color($col-border, $lightness: 60%);
 
 @keyframes target-fade {
   from { background-color: $col-signal; }
-  to { background-color: #fff; }
-}
-
-@keyframes target-fade-moderator {
-  from { background-color: $col-signal; }
-  to { background-color: $col-moderator; }
-}
-
-@keyframes target-fade-own {
-  from { background-color: $col-signal; }
-  to { background-color: $col-own; }
+  to { background-color: var(--comus-bg); }
 }
 
 .comus-block {
+  --comus-bg: #{$col-bg};
   li  {
-    //padding-top: 4em;   // take fixed navbar into account
-    //margin-top: -4em;
-    //margin-bottom: $mvert;
-    &:last-child  {
-      //margin-bottom: 0;
-    }
     &:target {
       & > .comus-wrap {
         animation: target-fade $signal-time 1;
-      }
-      & > .comus-moderator {
-        animation: target-fade-moderator $signal-time 1;
-      }
-      & > .comus-own {
-        animation: target-fade-own $signal-time 1;
       }
     }
   }
   ol ol {
     border-left: $left-border;
     padding-left: $indent;
-    //padding-top: $mvert;
   }
   [type=submit] {
     margin-left: 1em;
@@ -95,12 +73,9 @@ $left-border: .5em solid scale_color($col-border, $lightness: 60%);
 }
 
 .comus-wrap {
-  //border-top: 1px solid $ccol;
+  background-color: var(--comus-bg);
   border-bottom: 1px solid $col-border;
-  //box-shadow: inset 0 0 8px 0 $ccol; //rgba(0, 0, 0, 0.30);
-  //border-radius: .3em;
   padding: .5em 1rem;
-  //margin-bottom: 1em;
   .comus-buttons {
     display: none;
     margin-left: auto;
@@ -111,19 +86,17 @@ $left-border: .5em solid scale_color($col-border, $lightness: 60%);
       padding: 0 .3em;
     }
   }
-
   &:hover .comus-buttons {
     display: flex;
   }
 }
 
-.comus-author,
-.comus-date  {
-  border-bottom: 1px solid $col-border;
+.comus-meta  {
+  display: flex;
+  border-bottom: 1px dotted $gray;
 }
 
 .comus-author {
-//.comus-date  {
   font-weight: bold;
 }
 
@@ -131,15 +104,21 @@ $left-border: .5em solid scale_color($col-border, $lightness: 60%);
   padding-left: 1em;
 }
 
+.comus-short {
+  padding-left: 1em;
+  font-size: 75%;
+  color: $gray;
+}
+
 .comus-moderator  {
-  background-color: $col-moderator;
+  --comus-bg: #{$col-moderator};
 }
 
 .comus-own  {
-  background-color: $col-own;
+  --comus-bg: #{$col-own};
 }
 
-.comus-meta {
+.comus-ribbon {
   display: flex;
 }
 

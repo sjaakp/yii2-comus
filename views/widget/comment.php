@@ -1,5 +1,17 @@
 <?php
 
+/**
+ * sjaakp/yii2-comus
+ * ----------
+ * Comment module for Yii2 framework
+ * Version 1.0.0
+ * Copyright (c) 2019
+ * Sjaak Priester, Amsterdam
+ * MIT License
+ * https://github.com/sjaakp/yii2-comus
+ * https://sjaakpriester.nl
+ */
+
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\widgets\Pjax;
@@ -37,11 +49,11 @@ $this->registerJs('
     });
 ');
 
-$cls = 'comus-block comus-' . ($module->order == SORT_ASC ? 'asc' : 'desc');
+$cls = 'comus-block comus-' . ($module->orderDescending ? 'desc' : 'asc');
 Html::addCssClass($options, $cls);
 
 Pjax::begin([
-    'timeout' => 20000,
+//    'timeout' => 20000,
     'enablePushState' => false,
     'options' => $options,
     'id' => 'cmts'
