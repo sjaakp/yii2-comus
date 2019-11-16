@@ -19,6 +19,10 @@ use yii\base\InvalidConfigException;
 use yii\base\Widget;
 use yii\helpers\Inflector;
 
+/**
+ * Class ComusBase
+ * @package sjaakp\comus
+ */
 class ComusBase extends Widget
 {
     /**

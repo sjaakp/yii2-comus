@@ -17,6 +17,10 @@ namespace sjaakp\comus;
 
 use yii\base\InvalidConfigException;
 
+/**
+ * Class CommentCount
+ * @package sjaakp\comus
+ */
 class CommentCount extends ComusBase
 {
     /**

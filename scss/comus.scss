@@ -35,6 +35,7 @@ $left-border: .5em solid scale_color($col-border, $lightness: 60%);
   }
   [type=submit] {
     margin-left: 1em;
+    align-self: flex-end;
   }
   textarea  {
     border: 1px solid $gray;
@@ -73,9 +74,10 @@ $left-border: .5em solid scale_color($col-border, $lightness: 60%);
 }
 
 .comus-wrap {
+  display: flex;
   background-color: var(--comus-bg);
   border-bottom: 1px solid $col-border;
-  padding: .5em 1rem;
+  padding: .5em;
   .comus-buttons {
     display: none;
     margin-left: auto;
@@ -89,6 +91,15 @@ $left-border: .5em solid scale_color($col-border, $lightness: 60%);
   &:hover .comus-buttons {
     display: flex;
   }
+}
+
+.comus-avatar {
+  flex: none;
+  margin-right: .5em;
+}
+
+.comus-inner {
+  flex: auto;
 }
 
 .comus-meta  {
@@ -155,6 +166,7 @@ $left-border: .5em solid scale_color($col-border, $lightness: 60%);
   }
 }
 
+.comus-previous,
 .comus-next,
 .comus-delete,
 .comus-edit,
@@ -166,6 +178,10 @@ $left-border: .5em solid scale_color($col-border, $lightness: 60%);
   }
 }
 
+.comus-next {
+  margin-left: .3em;
+}
+
 .comus-group  {
   width: 100%;
 }
@@ -173,7 +189,7 @@ $left-border: .5em solid scale_color($col-border, $lightness: 60%);
 .comus-create,
 .comus-comment form {
   display: flex;
-  align-items: flex-end;
+  //align-items: flex-end;
 }
 
 .comus-editor,
@@ -182,6 +198,9 @@ $left-border: .5em solid scale_color($col-border, $lightness: 60%);
   .field-comment-body  {
     flex: auto;
   }
+  //button  {
+  //  align-self: flex-end;
+  //}
 }
 
 .comus-editing > .comus-wrap {

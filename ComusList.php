@@ -17,6 +17,10 @@ namespace sjaakp\comus;
 use yii\data\ActiveDataProvider;
 use yii\widgets\ListView;
 
+/**
+ * Class ComusList
+ * @package sjaakp\comus
+ */
 class ComusList extends ListView
 {
     /**

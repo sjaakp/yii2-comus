@@ -23,6 +23,10 @@ use yii\web\NotFoundHttpException;
 use sjaakp\comus\Module;
 use sjaakp\comus\models\Comment;
 
+/**
+ * Class DefaultController
+ * @package sjaakp\comus
+ */
 class DefaultController extends Controller
 {
     /**
@@ -33,7 +37,7 @@ class DefaultController extends Controller
         return [
             'access' => [
                 'class' => AccessControl::class,
-                'only' => ['index', 'pending'],
+                'only' => ['index', 'previous', 'next'],
                 'rules' => [
                     [
                         'allow' => true,
@@ -45,7 +49,8 @@ class DefaultController extends Controller
                 'class' => VerbFilter::class,
                 'actions' => [
                     'index' => [ 'GET' ],
-                    'pending' => [ 'GET' ],
+                    'previous' => [ 'GET' ],
+                    'next' => [ 'GET' ],
                     'user' => [ 'GET' ],
                     '*' => [ 'POST' ],
                 ],
@@ -54,7 +59,6 @@ class DefaultController extends Controller
     }
 
     /**
-     * Lists all Comment models.
      * @return mixed
      */
     public function actionIndex($s = Comment::PENDING)
@@ -90,16 +94,22 @@ class DefaultController extends Controller
 
     /**
      * @return \yii\web\Response
-     * Redirect to first pending comment if available, to index otherwise
+     * Redirect to next pending comment if available, to index otherwise
      */
-    public function actionPending()
+    public function actionNext($after)
     {
-        $comment = Comment::find()
-            ->where([ 'status' => Comment::PENDING ])
-            ->orderBy([ 'created_at' => $this->module->orderDescending ? SORT_DESC : SORT_ASC ])
-            ->one();
+        $desc = $this->module->orderDescending;
+        return $this->step($desc ? '<' : '>', $desc ? SORT_DESC : SORT_ASC, $after);
+    }
 
-        return $this->redirect($comment ? $comment->url : [ 'index' ]);
+    /**
+     * @return \yii\web\Response
+     * Redirect to previous pending comment if available, to index otherwise
+     */
+    public function actionPrevious($before)
+    {
+        $desc = $this->module->orderDescending;
+        return $this->step($desc ? '>' : '<', $desc ? SORT_ASC : SORT_DESC, $before);
     }
 
     /**
@@ -109,7 +119,6 @@ class DefaultController extends Controller
     {
         /* @var $module Module */
         $module = $this->module;
-//        return '';
         return $module->userCanComment() ? $this->refreshWidget(new Comment()) : '';
     }
 
@@ -156,6 +165,21 @@ class DefaultController extends Controller
             'subject' => $subject,
             'moduleId' => $this->module->id
         ]);
+    }
+
+    /**
+     * @return \yii\web\Response
+     * Redirect to previous/next pending comment if available, to index otherwise
+     */
+    protected function step($operator, $sort, $dt)
+    {
+        $comment = Comment::find()
+            ->where([ 'status' => Comment::PENDING ])
+            ->andWhere([ $operator, 'created_at', $dt ])
+            ->orderBy([ 'created_at' => $sort ])
+            ->one();
+
+        return $this->redirect($comment ? $comment->href : [ 'index' ]);
     }
 
     /**

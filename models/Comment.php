@@ -17,12 +17,14 @@ namespace sjaakp\comus\models;
 use Yii;
 use yii\db\ActiveRecord;
 use yii\behaviors\BlameableBehavior;
+use yii\db\StaleObjectException;
 use yii\helpers\Html;
 use sjaakp\novelty\NoveltyBehavior;
 use yii\db\Expression;
 
 /**
- * This is the model class for table "{{%comment}}".
+ * Class Comment
+ * @package sjaakp\comus
  *
  * @property int $id
  * @property string $subject
@@ -66,6 +68,26 @@ class Comment extends ActiveRecord
             ],
             BlameableBehavior::class,
         ];
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function beforeDelete()
+    {
+        if (!parent::beforeDelete()) {
+            return false;
+        }
+
+        $children = self::find()->where([ 'parent' => $this->id ])->all();
+        foreach($children as $child)  {
+            try {
+                $child->delete();
+            } catch (\Throwable $e) {
+                return false;
+            }
+        }
+        return true;
     }
 
     /**

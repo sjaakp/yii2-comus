@@ -22,12 +22,13 @@ use sjaakp\comus\models\Comment;
 /** @var $action string action in DefaultController */
 /** @var $class string */
 /** @var $label string */
+/** @var $avatar string */
 /** @var $placeholder false|string */
 /** @var $this yii\web\View */
 
 // @link https://stackoverflow.com/questions/4954252/css-textarea-that-expands-as-you-type-text
 $this->registerJs('
-$("textarea").on("paste input", function () {
+$("textarea").on("focus paste input", function () {
     if ($(this).outerHeight() > this.scrollHeight){
         $(this).height(1)
     }
@@ -36,7 +37,6 @@ $("textarea").on("paste input", function () {
     }
 });
 ');
-
 
 $url = ["/{$module->id}/default/$action"];
 if (! $comment->isNewRecord) $url['id'] = $comment->id;
@@ -48,6 +48,10 @@ $form = ActiveForm::begin([
         'data-pjax' => true,
     ]
 ]);
+
+if (! empty($avatar))   {
+    echo Html::tag('div', $avatar, [ 'class' => 'comus-avatar' ]);
+}
 
 echo $form->field($comment, 'body', [
     'options' => [
@@ -62,11 +66,10 @@ echo $form->field($comment, 'body', [
 echo Html::activeHiddenInput($comment, 'subject');
 echo Html::activeHiddenInput($comment, 'parent');
 
-echo Html::submitButton(Yii::t('comus', $module->icons['send']), [
+echo Html::submitButton($module->icons['send'], [
     'class' => 'btn btn-outline-success',
     'title' => Yii::t('comus', 'Send')
 ]);
 
 ActiveForm::end();
 ?>
-

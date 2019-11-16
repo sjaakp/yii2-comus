@@ -18,6 +18,10 @@ use yii\base\InvalidConfigException;
 use yii\base\Widget;
 use sjaakp\comus\models\Comment as CommentModel;
 
+/**
+ * Class Comment
+ * @package sjaakp\comus
+ */
 class Comment extends ComusBase
 {
     /**

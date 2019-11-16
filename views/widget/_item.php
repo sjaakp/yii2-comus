@@ -25,6 +25,7 @@ $delLabel = Yii::t('comus', 'Delete');
 $editLabel = Yii::t('comus', 'Edit');
 $replyLabel = Yii::t('comus', 'Reply');
 $nextLabel = Yii::t('comus', 'Next');
+$previousLabel = Yii::t('comus', 'Previous');
 
 $reply = new Comment([
     'subject' => $model->subject,
@@ -32,6 +33,7 @@ $reply = new Comment([
 ]);
 
 $identity = $model->createdBy;
+$avatar = $module->getAvatar($identity);
 $moduleId = $module->id;
 $user = Yii::$app->user;
 
@@ -69,12 +71,20 @@ if ($module->userCanComment())   {
 
         $buttons .= Html::tag('div', $statusButtons, [ 'class' => 'form_group field-comment-status' ]);
         $buttons .= Html::endForm();
-        $buttons .= Html::a($module->icons['next'], ["/$moduleId/default/pending"], [
-            'class' => 'comus-next',
-            'title' => $nextLabel,
-            'aria-label' => $nextLabel,
-            'data-pjax' => 0,
-       ]);
+        if ($model->status == Comment::PENDING) {
+            $buttons .= Html::a($module->icons['previous'], [ "/$moduleId/default/previous", 'before' => $model->created_at ], [
+                'class' => 'comus-previous',
+                'title' => $previousLabel,
+                'aria-label' => $previousLabel,
+                'data-pjax' => 0,
+            ]);
+            $buttons .= Html::a($module->icons['next'], [ "/$moduleId/default/next", 'after' => $model->created_at ], [
+                'class' => 'comus-next',
+                'title' => $nextLabel,
+                'aria-label' => $nextLabel,
+                'data-pjax' => 0,
+            ]);
+        }
     }
     if ($user->can('updateComment', $model))    {
         $buttons .= Html::a($module->icons['edit'], '#', [
@@ -91,7 +101,10 @@ if ($module->userCanComment())   {
             'aria-label' => $delLabel,
             'data' => [
                 'pjax' => true,
-                'confirm' => Yii::t('comus', 'Deleting Comment. Are you sure?'),
+                'pjax-scrollto' => false,
+                'confirm' => Yii::t('comus', 'Deleting {nick}\'s Comment. Are you sure?', [
+                    'nick' => $module->getNickname($identity, false)
+                ]),
                 'method' => 'post'
             ]
         ]);
@@ -107,19 +120,23 @@ if ($module->userCanComment())   {
     $ribbon .= Html::tag('div', $buttons, [ 'class' => 'comus-buttons' ]);
 }
 
-$wrap = Html::tag('div', $ribbon, [ 'class' => 'comus-ribbon' ])
+$inner = Html::tag('div', $ribbon, [ 'class' => 'comus-ribbon' ])
     . $model->getSanitizedBody();
 
 if ($user->can('updateComment')) {
-    $wrap .= $this->render('_editor', [
+    $inner .= $this->render('_editor', [
         'module' => $module,
         'comment' => $model,
         'action' => 'update',
         'class' => 'comus-editor',
         'label' => Yii::t('comus', 'Update'),
+        'avatar' => null,
         'placeholder' => false
     ]);
 }
+
+$wrap = empty($avatar) ? '' : Html::tag('div', $avatar, [ 'class' => 'comus-avatar' ]);
+$wrap .= Html::tag('div', $inner, [ 'class' => 'comus-inner' ]);
 
 echo Html::tag('div', $wrap, [ 'class' => 'comus-wrap ' . $model->classes ]);
 
@@ -130,7 +147,8 @@ if ($level < $module->maxLevel)    {
             'module' => $module,
             'comment' => $reply,
             'action' => 'create',
-            'class' => false,
+            'class' => 'pb-2 border-bottom',
+            'avatar' => $module->getAvatar(),
             'placeholder' => Yii::t('comus', 'My reply...')
         ]),  [ 'class' => 'comus-comment' ]) : '';
 

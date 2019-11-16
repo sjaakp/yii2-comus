@@ -21,6 +21,10 @@ use yii\helpers\Html;
 use yii\helpers\StringHelper;
 use sjaakp\comus\models\Comment;
 
+/**
+ * Class UserComments
+ * @package sjaakp\comus
+ */
 class UserComments extends GridView
 {
     /**

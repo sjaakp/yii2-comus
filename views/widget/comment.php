@@ -35,11 +35,15 @@ $this->registerJs('
     })
     .on("click", ".comus-edit", function(e) {
         e.preventDefault();
-        setLiClass($(this).closest("li"), "comus-editing");
+        let li = $(this).closest("li");
+        setLiClass(li, "comus-editing");
+        li.find(".comus-editor textarea").focus();
     })
     .on("click", ".comus-reply", function(e) {
         e.preventDefault();
-        setLiClass($(this).closest("li"), "comus-replying");
+        let li = $(this).closest("li");
+        setLiClass(li, "comus-replying");
+        li.find(".comus-comment textarea").focus();
     })
     .on("submit", ".comus-editor", function(e) {
         $(this).parent().removeClass("comus-editing");
@@ -53,7 +57,6 @@ $cls = 'comus-block comus-' . ($module->orderDescending ? 'desc' : 'asc');
 Html::addCssClass($options, $cls);
 
 Pjax::begin([
-//    'timeout' => 20000,
     'enablePushState' => false,
     'options' => $options,
     'id' => 'cmts'
@@ -70,6 +73,7 @@ if ($module->userCanView()) {
         'comment' => $comment,
         'action' => 'create',
         'class' => 'comus-create',
+        'avatar' => $module->getAvatar(),
         'placeholder' => Yii::t('comus', 'My comment...')
     ]) : Html::tag('p', Yii::t('comus', '<a href="{loginUrl}">Login</a> to comment', [
         'loginUrl' => Url::to($module->loginUrl)

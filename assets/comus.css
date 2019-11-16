@@ -18,6 +18,7 @@
 }
 .comus-block [type=submit] {
   margin-left: 1em;
+  align-self: flex-end;
 }
 .comus-block textarea {
   border: 1px solid #95a5a6;
@@ -53,9 +54,10 @@
 }
 
 .comus-wrap {
+  display: flex;
   background-color: var(--comus-bg);
   border-bottom: 1px solid #bfc9ca;
-  padding: 0.5em 1rem;
+  padding: 0.5em;
 }
 .comus-wrap .comus-buttons {
   display: none;
@@ -69,6 +71,15 @@
 }
 .comus-wrap:hover .comus-buttons {
   display: flex;
+}
+
+.comus-avatar {
+  flex: none;
+  margin-right: 0.5em;
+}
+
+.comus-inner {
+  flex: auto;
 }
 
 .comus-meta {
@@ -135,6 +146,7 @@
   opacity: 0.7;
 }
 
+.comus-previous,
 .comus-next,
 .comus-delete,
 .comus-edit,
@@ -142,11 +154,16 @@
   margin-left: 1em;
   color: #95a5a6;
 }
+.comus-previous:hover,
 .comus-next:hover,
 .comus-delete:hover,
 .comus-edit:hover,
 .comus-reply:hover {
   color: #343a40;
+}
+
+.comus-next {
+  margin-left: 0.3em;
 }
 
 .comus-group {
@@ -156,7 +173,6 @@
 .comus-create,
 .comus-comment form {
   display: flex;
-  align-items: flex-end;
 }
 
 .comus-editor,

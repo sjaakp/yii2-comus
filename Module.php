@@ -26,14 +26,8 @@ use yii\web\GroupUrlRule;
 use sjaakp\comus\models\Comment;
 
 /**
- * comus module definition class
- * Est fidelis abactor, cesaris. Emeritis, audax tumultumques absolute manifestum de dexter, neuter devirginato. Clabulare varius absolutio est.
- * Pestilence is a weird gull. Salty lifes lead to the power. O, god. Seas fall with adventure at the coal-black rummage island! The lagoon stutters punishment like a proud pegleg.
- * Going to the country of mind doesn’t desire faith anymore than receiving creates pictorial volume. A new form of purpose is the core.
- * Ecce, spatii! Aonides moris, tanquam raptus vita. A falsis, solem flavum mortem. Resistentias cadunt!
- * Varnish each side of the ghee with twelve teaspoons of herring. Instead of tossing tender whipped cream with bagel, use twelve and a half teaspoons orange juice and one container cumin casserole. Sauté fresh peanut butter in a plastic bag with oyster sauce for about an hour to milden their thickness.
- * Make it so. Processors warp with advice! Hypnosis, turbulence, and voyage. Go surprisingly like a solid teleporter.
- * Separate harmonies forgets most relativities. Be apostolic. Always harmoniously feel the parallel sinner. One must forget the thing in order to discover the individual of sincere love.
+ * Class Module
+ * @package sjaakp\comus
  */
 class Module extends YiiModule implements BootstrapInterface
 {
@@ -113,6 +107,14 @@ class Module extends YiiModule implements BootstrapInterface
     public $usernameAttr = 'name';
 
     /**
+     * @var string | callable | null
+     * string: attribute of avatar in identity class
+     * callable: function($identity) returning avatar
+     * null: no avatar shown
+     */
+    public $avatarAttr;
+
+    /**
      * @var int maximum length of comment contents presented in default/index action
      * Only applies to users with 'manageComments' permission
      */
@@ -127,6 +129,7 @@ class Module extends YiiModule implements BootstrapInterface
         'delete' => '<i class="far fa-trash-alt"></i>',
         'edit' => '<i class="far fa-edit"></i>',
         'next' => '<i class="fas fa-step-forward"></i>',
+        'previous' => '<i class="fas fa-step-backward"></i>',
         'reject' => '<i class="far fa-hand-paper"></i>',
         'reply' => '<i class="fas fa-reply"></i>',
         'send' => '<i class="fas fa-share-square"></i>'
@@ -182,6 +185,7 @@ class Module extends YiiModule implements BootstrapInterface
                         'sjaakp\comus\migrations'
                     ]
                 ],
+                'comus' => 'sjaakp\comus\commands\ComusController'
             ]);
         }
     }
@@ -218,19 +222,16 @@ class Module extends YiiModule implements BootstrapInterface
     }
 
     /**
-     * @param null $identity
-     * @param false|array $urlOptions
+     * @param $identity  yii\db\ActiveRecord|null
+     * @param $urlOptions false|array
      * @return string
      * If $urlOptions === false, return is just the plain name; otherwise it's a link
      */
     public function getNickname($identity = null, $urlOptions = [])
     {
-        /* @var $identity yii\db\ActiveRecord */
-        if (is_null($identity)) {
-            $user = Yii::$app->user;
-            if ($user->isGuest) return '';
-            $identity = $user->identity;
-        }
+        $identity = $this->getIdentity($identity);
+        if (is_null($identity)) return '';
+
         $name = is_callable($this->usernameAttr)
             ? ($this->usernameAttr)($identity)
             : $identity->getAttribute($this->usernameAttr);
@@ -240,6 +241,19 @@ class Module extends YiiModule implements BootstrapInterface
         $url = $this->profileUrl;
         $url['id'] = $identity->id;
         return Html::a($name, $url, $urlOptions);
+    }
+
+    /**
+     * @param $identity  yii\db\ActiveRecord|null
+     * @return string
+     */
+    public function getAvatar($identity = null)
+    {
+        $identity = $this->getIdentity($identity);
+        if (is_null($identity)) return '';
+        return is_callable($this->avatarAttr)
+            ? ($this->avatarAttr)($identity)
+            : $identity->getAttribute($this->avatarAttr);
     }
 
     /**
@@ -261,5 +275,21 @@ class Module extends YiiModule implements BootstrapInterface
     {
         if (is_null($user)) $user = Yii::$app->user;
         return is_null($this->createPermission) ? ! $user->isGuest : $user->can($this->createPermission);
+    }
+
+    /**
+     * @param $identity  yii\db\ActiveRecord|null
+     * @return yii\db\ActiveRecord|null
+     * if $identity == null, return current user identity; null if user is guest
+     * otherwise, just return identity
+     */
+    protected function getIdentity($identity)
+    {
+        if (is_null($identity)) {
+            $user = Yii::$app->user;
+            if ($user->isGuest) return null;
+            $identity = $user->identity;
+        }
+        return $identity;
     }
 }

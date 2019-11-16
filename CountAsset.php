@@ -16,6 +16,10 @@ namespace sjaakp\comus;
 
 use yii\web\AssetBundle;
 
+/**
+ * Class CountAsset
+ * @package sjaakp\comus
+ */
 class CountAsset extends AssetBundle
 {
     public $sourcePath = __DIR__ . DIRECTORY_SEPARATOR . 'assets';
