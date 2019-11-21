@@ -32,6 +32,20 @@ use sjaakp\comus\models\Comment;
 class Module extends YiiModule implements BootstrapInterface
 {
     /**
+     * @var array|string
+     * Url to the login page of the site. Must be set.
+     */
+    public $loginUrl;
+
+    /**
+     * @var array | null | false
+     * If array: url of profile view; will be extended with 'id' => <user-id>. Example: ['/profile/view']
+     * If null: url comus' builtin light weight profile
+     * If false: user names will never be presented as a link, just as plain text
+     */
+    public $profileUrl = null;
+
+    /**
      * @var int  maximum level of comment
      * If 0 (default) comments can only be issued directly on the subject, not on another comment
      */
@@ -72,20 +86,6 @@ class Module extends YiiModule implements BootstrapInterface
     public $datetimeFormat = 'standard';
 
     /**
-     * @var array|string
-     * Url to the login page of the site. Must be set.
-     */
-    public $loginUrl;
-
-    /**
-     * @var array | null | false
-     * If array: url of profile view; will be extended with 'id' => <user-id>. Example: ['/profile/view']
-     * If null: url comus' builtin light weight profile
-     * If false: user names will never be presented as a link, just as plain text
-     */
-    public $profileUrl = null;
-
-    /**
      * @var string
      * Permission needed to view comments
      * If null (default): all users can view comments.
@@ -115,8 +115,12 @@ class Module extends YiiModule implements BootstrapInterface
     public $avatarAttr;
 
     /**
-     * @var int maximum length of comment contents presented in default/index action
-     * Only applies to users with 'manageComments' permission
+     * @var int maximum length of comment contents in characters
+     */
+    public $maxLength = 400;
+
+    /**
+     * @var int maximum length of the comment fragment presented UserComments widget and in default/index action
      */
     public $truncLength = 80;
 

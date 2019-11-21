@@ -18,6 +18,7 @@ use Yii;
 use yii\base\InvalidConfigException;
 use yii\base\Widget;
 use yii\helpers\Inflector;
+use yii\helpers\Url;
 
 /**
  * Class ComusBase
@@ -59,7 +60,7 @@ class ComusBase extends Widget
             if (is_array($id))  {
                 throw new InvalidConfigException('Model has composite primary key; this is not allowed.');
             }
-            $this->subject = "$controllerId/$id";
+            $this->subject = Url::to(["$controllerId/view", 'id' => $id]);
         }
 
         if (empty($this->subject)) {

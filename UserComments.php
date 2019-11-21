@@ -39,12 +39,6 @@ class UserComments extends GridView
      */
     public $datetimeFormat = 'short';
 
-    /**
-     * @var int
-     * @var int maximum length of comment contents presented
-     */
-    public $truncLength = 80;
-
     public $options = [ 'class' => 'comus-user-comments' ];
     public $tableOptions = ['class' => 'table table-sm table-bordered'];
     public $emptyText = false;
@@ -69,18 +63,20 @@ class UserComments extends GridView
             'query' => $query,
             'sort' => false
         ]);
+
+        $dtFormat = $this->datetimeFormat ?? $module->datetimeFormat;
         $this->columns = [
             [
                 'attribute' => 'created_at',
-                'value' => function ($model, $key, $index, $widget)  {
+                'value' => function ($model, $key, $index, $widget) use ($dtFormat) {
                     /* @var $model Comment */
-                    return $model->getFormattedTime($this->datetimeFormat);
+                    return $model->getFormattedTime($dtFormat);
                 },
             ],
             [
                 'attribute' => 'body',
-                'value' => function ($model, $key, $index, $widget)  {
-                    return Html::a(StringHelper::truncate($model->sanitizedBody, $this->truncLength), $model->href);
+                'value' => function ($model, $key, $index, $widget) use ($module)  {
+                    return Html::a(StringHelper::truncate($model->sanitizedBody, $module->truncLength), $model->href);
                 },
                 'format' => 'html'
             ],

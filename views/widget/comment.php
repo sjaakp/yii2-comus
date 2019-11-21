@@ -53,6 +53,8 @@ $this->registerJs('
     });
 ');
 
+Yii::$app->user->setReturnUrl(Yii::$app->request->url);
+
 $cls = 'comus-block comus-' . ($module->orderDescending ? 'desc' : 'asc');
 Html::addCssClass($options, $cls);
 
@@ -68,7 +70,7 @@ echo Html::tag('h3', Yii::t('comus', 'Comments ({n,number})', [
 
 if ($module->userCanView()) {
 
-    $lvl = $module->userCanComment() ? $this->render('_editor', [
+    $edt = $module->userCanComment() ? $this->render('_editor', [
         'module' => $module,
         'comment' => $comment,
         'action' => 'create',
@@ -79,10 +81,12 @@ if ($module->userCanView()) {
         'loginUrl' => Url::to($module->loginUrl)
     ]), [ 'class' => 'comus-prompt' ]);
 
-    $lvl .= ComusList::widget([
+    $lst = ComusList::widget([
         'subject' => $comment->subject,
         'module' => $module,
     ]);
+
+    $lvl = $module->orderDescending ? $edt . $lst : $lst . $edt;
 
     echo Html::tag('div', $lvl, [ 'class' => 'comus-level comus-level-0' ]);
 }

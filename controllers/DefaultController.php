@@ -179,7 +179,7 @@ class DefaultController extends Controller
             ->orderBy([ 'created_at' => $sort ])
             ->one();
 
-        return $this->redirect($comment ? $comment->href : [ 'index' ]);
+        return $this->redirect($comment ? $comment->href : 'index');
     }
 
     /**

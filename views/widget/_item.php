@@ -138,11 +138,14 @@ if ($user->can('updateComment')) {
 $wrap = empty($avatar) ? '' : Html::tag('div', $avatar, [ 'class' => 'comus-avatar' ]);
 $wrap .= Html::tag('div', $inner, [ 'class' => 'comus-inner' ]);
 
-echo Html::tag('div', $wrap, [ 'class' => 'comus-wrap ' . $model->classes ]);
+echo Html::tag('div', $wrap, [
+    'class' => 'comus-wrap ' . $model->classes,
+    'tabindex' => 0
+]);
 
 if ($level < $module->maxLevel)    {
     $level1 = $level + 1;
-    $lvl = $module->userCanComment() ? Html::tag('div',
+    $edt = $module->userCanComment() ? Html::tag('div',
         $this->render('_editor', [
             'module' => $module,
             'comment' => $reply,
@@ -152,12 +155,14 @@ if ($level < $module->maxLevel)    {
             'placeholder' => Yii::t('comus', 'My reply...')
         ]),  [ 'class' => 'comus-comment' ]) : '';
 
-    $lvl .= ComusList::widget([
+    $lst = ComusList::widget([
         'subject' => $model->subject,
         'module' => $module,
         'parent' => $model->id,
         'level' => $level1
     ]);
+
+    $lvl = $module->orderDescending ? $edt . $lst : $lst . $edt;
 
     echo Html::tag('div', $lvl, [ 'class' => "comus-level comus-level-$level1" ]);
 }

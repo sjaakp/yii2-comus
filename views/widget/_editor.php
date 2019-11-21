@@ -60,6 +60,8 @@ echo $form->field($comment, 'body', [
 ])->label(isset($label) ? $label : $module->getNickname(null, false) . ':')->textarea([
     'class' => 'form-control',
     'rows' => 1,
+    'maxlength' => $module->maxLength,
+    'required' => true,
     'placeholder' => $placeholder
 ]);
 

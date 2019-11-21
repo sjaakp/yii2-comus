@@ -17,8 +17,8 @@ namespace sjaakp\comus\models;
 use Yii;
 use yii\db\ActiveRecord;
 use yii\behaviors\BlameableBehavior;
-use yii\db\StaleObjectException;
 use yii\helpers\Html;
+use yii\helpers\HtmlPurifier;
 use sjaakp\novelty\NoveltyBehavior;
 use yii\db\Expression;
 
@@ -46,6 +46,14 @@ class Comment extends ActiveRecord
         self::PENDING => 'pending',
         self::ACCEPTED => 'accepted',
         self::REJECTED => 'rejected'
+    ];
+
+    /**
+     * @var array
+     */
+    public $purifierConfig = [
+        'HTML.Allowed' => 'p,a[href]',
+        'AutoFormat.AutoParagraph' => true
     ];
 
     /**
@@ -136,7 +144,7 @@ class Comment extends ActiveRecord
      */
     public function getHref()
     {
-        return [ "/{$this->subject}", '#' => "cmt-{$this->id}" ];
+        return [ $this->subject, '#' => "cmt-{$this->id}" ];
     }
 
     /**
@@ -162,8 +170,8 @@ class Comment extends ActiveRecord
     {
         return [
             // @link https://stackoverflow.com/questions/30124559/yii2-how-to-validate-xss-cross-site-scripting-in-form-model-input/30124560
-            [['body'], 'filter', 'filter' => '\yii\helpers\HtmlPurifier::process'],
-            [['body'], 'required', 'message' => Yii::t('comus', 'Comment cannot be blank')],
+           [['body'], 'filter', 'filter' => function($in) { return HtmlPurifier::process($in, $this->purifierConfig); }],
+//            [['body'], 'required', 'message' => Yii::t('comus', 'Comment cannot be blank')],  // replaced by HTML required
             [['created_at', 'updated_at', 'created_by', 'updated_by', 'subject', 'parent', 'status'], 'safe'],
         ];
     }

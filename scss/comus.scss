@@ -63,11 +63,11 @@ $left-border: .5em solid scale_color($col-border, $lightness: 60%);
   flex-direction: column;
 }
 
-.comus-asc {
-  .comus-level  {
-    flex-direction: column-reverse;
-  }
-}
+//.comus-asc {
+//  .comus-level  {
+//    flex-direction: column-reverse;
+//  }
+//}
 
 .comus-level-0 > .comus-list  {
   border-top: 1px solid $col-border;
@@ -86,9 +86,13 @@ $left-border: .5em solid scale_color($col-border, $lightness: 60%);
       border: 1px solid #ccc;
       border-radius: .3em;
       padding: 0 .3em;
+      &:focus-within {
+        border-color: $gray-dark;
+      }
     }
   }
-  &:hover .comus-buttons {
+  &:hover .comus-buttons,
+  &:focus-within .comus-buttons {
     display: flex;
   }
 }
@@ -173,8 +177,10 @@ $left-border: .5em solid scale_color($col-border, $lightness: 60%);
 .comus-reply  {
   margin-left: 1em;
   color: $gray;
-  &:hover {
+  &:hover,
+  &:focus {
     color: $gray-dark;
+    outline: none;
   }
 }
 
@@ -184,6 +190,12 @@ $left-border: .5em solid scale_color($col-border, $lightness: 60%);
 
 .comus-group  {
   width: 100%;
+}
+
+.comus-body {
+  p:last-child  {
+    margin-bottom: 0;
+  }
 }
 
 .comus-create,

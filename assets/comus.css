@@ -45,10 +45,6 @@
   flex-direction: column;
 }
 
-.comus-asc .comus-level {
-  flex-direction: column-reverse;
-}
-
 .comus-level-0 > .comus-list {
   border-top: 1px solid #bfc9ca;
 }
@@ -69,7 +65,10 @@
   border-radius: 0.3em;
   padding: 0 0.3em;
 }
-.comus-wrap:hover .comus-buttons {
+.comus-wrap .comus-buttons .field-comment-status:focus-within {
+  border-color: #343a40;
+}
+.comus-wrap:hover .comus-buttons, .comus-wrap:focus-within .comus-buttons {
   display: flex;
 }
 
@@ -154,12 +153,17 @@
   margin-left: 1em;
   color: #95a5a6;
 }
-.comus-previous:hover,
+.comus-previous:hover, .comus-previous:focus,
 .comus-next:hover,
+.comus-next:focus,
 .comus-delete:hover,
+.comus-delete:focus,
 .comus-edit:hover,
-.comus-reply:hover {
+.comus-edit:focus,
+.comus-reply:hover,
+.comus-reply:focus {
   color: #343a40;
+  outline: none;
 }
 
 .comus-next {
@@ -168,6 +172,10 @@
 
 .comus-group {
   width: 100%;
+}
+
+.comus-body p:last-child {
+  margin-bottom: 0;
 }
 
 .comus-create,

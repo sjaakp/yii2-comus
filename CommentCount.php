@@ -12,7 +12,6 @@
  * https://sjaakpriester.nl
  */
 
-
 namespace sjaakp\comus;
 
 use yii\base\InvalidConfigException;
@@ -24,30 +23,18 @@ use yii\base\InvalidConfigException;
 class CommentCount extends ComusBase
 {
     /**
+     * @var bool  whether to show the counter if there are no comments
+     */
+    public $showZero = false;
+
+    /**
      * @var null|string
      * If null: outputs count as plain text
      * Otherwise: outputs template, where:
      *  '{count}'   is replaced by count
      *  '{href}'    is the url to the comment section of the model view
      */
-    public $template = '<a class="comus-count" href="{href}">{count}</a>';
-
-    /**
-     * @var bool  whether to show the counter if there are no comments
-     */
-    public $showZero = false;
-
-    /**
-     * {@inheritdoc}
-     * @throws InvalidConfigException
-     */
-    public function init()
-    {
-        parent::init();
-
-        $asset = new CountAsset();
-        $asset->register($this->view);
-    }
+    public $template = '<a class="badge badge-secondary" href="{href}">{count}</a>';
 
     /**
      * {@inheritdoc}
