@@ -33,7 +33,7 @@ A demonstration of **Comus** is [here](https://demo.sjaakpriester.nl/comus).
 the Free or the Pro version. If you're adventurous, you may adapt the [`icons` option](#module-options)
  of the module to make **Comus** work with another icon font.
  
- It is strongly advised that the app's uses 
+ It is strongly advised that the app uses 
  [Pretty URLs](https://www.yiiframework.com/doc/guide/2.0/en/runtime-routing#using-pretty-urls).
  
 ## Installation ##
@@ -168,7 +168,7 @@ for the User model can use the **UserComments** widget and may look like this:
 
 A comment directly on a subject is said to be of *level 0*. A comment on such comment is
 said to be a *reply* or a comment of *level 1*. And so on. The maximum level of a comment 
-is settable in the configuration. Default is 0, meaning that only direct comments are possible.
+is settable in the module configuration. Default is 0, meaning that only direct comments are possible.
 Don't set the maximum level to high, if only because each level indents somewhat.
 
 Notice that if the moderator deletes a comment, all of its replies are deleted as well.
@@ -273,7 +273,7 @@ The options (most are optional) are:
   user with `'manageComments'` permission; she can always view rejected comments 
   and their content. Default: `true`.
  - **showOwn** `bool` Overrides `showPending` and `showRejected` for comments created by 
- the user herself. Example: if you want rejected comments to be hidden, accept for the user's 
+ the user herself. Example: if you want rejected comments to be hidden, except for the user's 
  own comments, set `showRejected = false` and `showOwn = true`. Strongly recommended if you
  set `showPending = false`; otherwise the user won't see that she has issued a comment and probably try again.
  - **datetimeFormat** `string` `'standard'` | `'relative'` | any value 
@@ -294,7 +294,7 @@ The options (most are optional) are:
     - `null`: no avatar is shown.
  - **maxLength** `int` Maximum length of comment, in characters. Default: `400`.
  - **truncLength** `int` Maximum length of comment fragment presented
-  in **UserComments** widget and in `default/index` action,
+  in **UserComments** widget and in the moderator's comment overview,
  in characters. Default: `80`.
  - **icons** `array` Presets for a number of icons **Comus** uses. Default: see source.
  
@@ -315,7 +315,7 @@ The **CommentCount** widget has four options:
  - **model** `ActiveRecord` The model the comment count is related to.
 - **subject** `string` Basically, the relative URL of the `view` file. Either **model**
  or **subject** must be set, preferably **model**.
- - **showZero** `bool` Whether the widget should display if there are no comments related to
+ - **showZero** `bool` Whether the widget should be displayed if there are no comments related to
   the subject. Default: `false`.
  - **template** `string` HTML template for the output. Default: see source.
  
@@ -328,7 +328,8 @@ The **UserComments** widget has two options:
   [`yii\i18n\formatter::datetimeFormat`](https://www.yiiframework.com/doc/api/2.0/yii-i18n-formatter#$datetimeFormat-detail)
    can take. If not set, it takes the setting of the module. Default is `'short'`.
    
-**UserComments** is derived from Yii's `GridView`, so it has al its options as well. 
+**UserComments** is derived from Yii's `GridView`, so it has al the options belonging to that class
+ as well. 
  
 ## Events ##
 
@@ -387,7 +388,7 @@ Refer to the file 'ComusEvents.php' for a possible approach.
   
 ## Override view-files ##
 
-Any of **Comus**' view files can be overridden. 
+**Comus**' view files can be overridden. 
 Just set the **views** setting of the module to something like:
  
      <?php
