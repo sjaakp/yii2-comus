@@ -7,12 +7,16 @@ use yii\console\ExitCode;
 use sjaakp\comus\rbac\CreatorRule;
 
 /**
+ * Defines comment Permissions and Moderator Role.
+ *
  * Class ComusController
  * @package sjaakp\comus
  */
 class ComusController extends Controller
 {
     /**
+     * Defines comment Permissions and Moderator Role.
+     *
      * @throws \yii\base\Exception
      * @throws \Exception
      */
