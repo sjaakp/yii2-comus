@@ -66,37 +66,27 @@ $this->params['breadcrumbs'][] = $this->title;
             'attribute' => 'body',
             'content' => function($model, $key, $index, $column) use ($module)    {
                 return Html::a(StringHelper::truncate($model->body, $module->truncLength), $model->href, [ 'data-pjax' => 0 ]);
-            }
+            },
         ],
         [
             'attribute' => 'subject',
             'content' => function($model, $key, $index, $column)    {
                 return Html::a($model->subject, [ '/' . $model->subject ], [ 'data-pjax' => 0 ]);
-            }
+            },
+            'contentOptions' => [ 'class' => 'small' ]
         ],
-        'created_at:datetime',
-//        'updated_at',
+        [
+            'attribute' => 'created_at',
+            'format' => 'datetime',
+            'contentOptions' => [ 'class' => 'small' ]
+        ],
         [
             'attribute' => 'created_by',
             'content' => function($model, $key, $index, $column) use ($module)   {
-//                $url = $module->profileUrl;
-//                $url['id'] = $model->created_by;
                 return $module->getNickname($model->createdBy, [ 'data-pjax' => 0 ]);
-            }
+            },
+            'contentOptions' => [ 'class' => 'small' ]
         ],
-//        'updated_by',
-//        'status',
-
-/*        [
-            'class' => 'yii\grid\ActionColumn',
-            'visibleButtons' => [
-                'view' => ! Yii::$app->user->isGuest,
-                'update' => function ($model, $key, $index) {
-                    return Yii::$app->user->can('updateItem', $model);
-                },
-                'delete' => Yii::$app->user->can('deleteItem')
-            ]
-        ],*/
     ],
     'tableOptions' => ['class' => 'table table-sm table-bordered'],
     'formatter' => [

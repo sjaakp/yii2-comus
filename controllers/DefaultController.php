@@ -67,6 +67,7 @@ class DefaultController extends Controller
             'query' => Comment::find()
                 ->where([ 'status' => $s ])
                 ->orderBy([ 'created_at' => $this->module->orderDescending ? SORT_DESC : SORT_ASC ]),
+            'sort' => false
         ]);
 
         return $this->render('index', [

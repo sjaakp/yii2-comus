@@ -68,14 +68,15 @@ class UserComments extends GridView
         $this->columns = [
             [
                 'attribute' => 'created_at',
-                'value' => function ($model, $key, $index, $widget) use ($dtFormat) {
+                'content' => function ($model, $key, $index, $widget) use ($dtFormat) {
                     /* @var $model Comment */
                     return $model->getFormattedTime($dtFormat);
                 },
+                'contentOptions' => [ 'class' => 'small' ]
             ],
             [
                 'attribute' => 'body',
-                'value' => function ($model, $key, $index, $widget) use ($module)  {
+                'content' => function ($model, $key, $index, $widget) use ($module)  {
                     return Html::a(StringHelper::truncate($model->sanitizedBody, $module->truncLength), $model->href);
                 },
                 'format' => 'html'

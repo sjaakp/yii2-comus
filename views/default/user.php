@@ -22,7 +22,7 @@ use sjaakp\comus\UserComments;
 $this->title = $module->getNickname($identity, false);
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<h1><?= $this->title ?></h1>
+<h1 class="mb-4"><?= $this->title ?></h1>
 
 <?= UserComments::widget([
      'userId' => $identity->id
