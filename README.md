@@ -2,6 +2,10 @@
  
 ## Comment Module for Yii2 PHP Framework
 
+[![Latest Stable Version](https://poser.pugx.org/sjaakp/yii2-comus/v/stable)](https://packagist.org/packages/sjaakp/yii2-comus)
+[![Total Downloads](https://poser.pugx.org/sjaakp/yii2-comus/downloads)](https://packagist.org/packages/sjaakp/yii2-comus)
+[![License](https://poser.pugx.org/sjaakp/yii2-comus/license)](https://packagist.org/packages/sjaakp/yii2-comus)
+
 **Comus** is a complete comment module for the [Yii 2.0](https://www.yiiframework.com/ "Yii") PHP Framework.
 
 It lets authenticated visitors of a website place comments. The moderator, as well as the administrator of the site

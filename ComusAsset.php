@@ -30,6 +30,6 @@ class ComusAsset extends AssetBundle
     public $depends = [
     ];
     public $publishOptions = [
-        'forceCopy' => true
+//        'forceCopy' => true
     ];
 }
