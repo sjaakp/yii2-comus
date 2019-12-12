@@ -24,8 +24,8 @@ use sjaakp\comus\models\Comment;
 $delLabel = Yii::t('comus', 'Delete');
 $editLabel = Yii::t('comus', 'Edit');
 $replyLabel = Yii::t('comus', 'Reply');
-$nextLabel = Yii::t('comus', 'Next');
-$previousLabel = Yii::t('comus', 'Previous');
+$nextLabel = Yii::t('comus', 'Next pending');
+$previousLabel = Yii::t('comus', 'Previous pending');
 
 $reply = new Comment([
     'subject' => $model->subject,
@@ -71,7 +71,7 @@ if ($module->userCanComment())   {
 
         $buttons .= Html::tag('div', $statusButtons, [ 'class' => 'form_group field-comment-status' ]);
         $buttons .= Html::endForm();
-        if ($model->status == Comment::PENDING) {
+//        if ($model->status == Comment::PENDING) {
             $buttons .= Html::a($module->icons['previous'], [ "/$moduleId/default/previous", 'before' => $model->created_at ], [
                 'class' => 'comus-previous',
                 'title' => $previousLabel,
@@ -84,7 +84,7 @@ if ($module->userCanComment())   {
                 'aria-label' => $nextLabel,
                 'data-pjax' => 0,
             ]);
-        }
+//        }
     }
     if ($user->can('updateComment', $model))    {
         $buttons .= Html::a($module->icons['edit'], '#', [

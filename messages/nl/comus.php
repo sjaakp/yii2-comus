@@ -17,8 +17,8 @@
  * NOTE: this file must be saved in UTF-8 encoding.
  */
 return [
-    '<a href="{loginUrl}">Login</a> to comment' => '<a href="{loginUrl}">Login</a> om te reageren',
-    '<a href="{loginUrl}">Login</a> to view comments' => '<a href="{loginUrl}">Login</a> om reacties te zien',
+    '<a href="{loginUrl}">Login</a> to comment' => '<a href="{loginUrl}">Log in</a> om te reageren',
+    '<a href="{loginUrl}">Login</a> to view comments' => '<a href="{loginUrl}">Log in</a> om reacties te zien',
     'Accept' => 'Accepteer',
     'Accepted' => 'Geaccepteerd',
     'Body' => 'Inhoud',
@@ -39,8 +39,10 @@ return [
     'My comment...' => 'Mijn reactie...',
     'My reply...' => 'Mijn antwoord...',
     'Next' => 'Volgende',
+    'Next pending' => 'Volgende in wachtrij',
     'Pending' => 'Wachtrij',
     'Previous' => 'Vorige',
+    'Previous pending' => 'Vorige in wachtrij',
     'Reject' => 'Afwijzen',
     'Rejected' => 'Afgewezen',
     'Reply' => 'Antwoorden',
